@@ -1,0 +1,22 @@
+{
+  "name": "tjbot_watsonconversation",
+  "version": "1.0.0",
+  "description": "IBM TJBot Watson Conversation ",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shivag12/TJBot-Conversation.git"
+  },
+  "keywords": [
+    "TJBot"
+  ],
+  "author": "Shiva G",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/shivag12/TJBot-Conversation/issues"
+  },
+  "homepage": "https://github.com/shivag12/TJBot-Conversation#readme"
+}
