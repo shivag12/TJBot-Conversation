@@ -11,6 +11,9 @@
     "text_to_speech" : {
         "username" :"",
         "password" :""
-    }
+    },
+    "CloudantNosql" : {
+        "url" : "http://91b8fbd9-e6b2-45d5-a2f7-f023edd47cab-bluemix.cloudant.com/rfid/_design/chemicalsearch/_view/chemicalSearch?limit=20&reduce=false&descending=true"
+    }   
     
 }
