@@ -44,29 +44,34 @@ tj.listen(function(msg){
         var msg_stt = msg.toLowerCase().replace("Watson","");
         console.log(msg_stt);
 
-        
-        http.get(config.CloudantNosql.url,function(res){
-            res.on("data",function(chunk){
-                rawdata += chunk;
-            })
-            res.on("end",function(){
-                var jsonrawdata = JSON.parse(rawdata);
-                conversationmessage(msg_stt,jsonrawdata);
-            })
-        })            
+        conversationmessage(msg_stt);
+
+        // http.get(config.CloudantNosql.url,function(res){
+        //     res.on("data",function(chunk){
+        //         rawdata += chunk;
+        //     })
+        //     res.on("end",function(){
+        //         var jsonrawdata = JSON.parse(rawdata);
+        //         conversationmessage(msg_stt,jsonrawdata);
+        //     })
+        // })            
     }
 })
 
 //Getting the location state of the chemical from the cloudant_DB
 function chemical_location(rawdata,chemical_name){
-   var chemical_loc = "";
-   if(chemical_name !== null){   
-        for(var i=0; i< rawdata.rows.length; i++){        
-            if(rawdata.rows[i].key.toLowerCase() === chemical_name.toLowerCase()){
+   var chemical_loc = "";   
+   var tempDate = "2017-05-26 15:47:03.754Z";
+
+   if(chemical_name !== null){  
+
+        for(var i=0; i< rawdata.rows.length; i++){
+            //chemical_loc = rawdata.rows[i].value[1];            
+            if(Date.parse(rawdata.rows[i].value[0]) > Date.parse(tempDate)){
                 chemical_loc = rawdata.rows[i].value[1];
-                break;
+                tempDate = rawdata.rows[i].value[0];               
             }
-        }
+        }        
    }
     return chemical_loc;
 }
@@ -86,8 +91,28 @@ function parsing_conv_respone(convrespose){
     return entity_chemical_name;
 }
 
+function cloudantGetRequest(responseentity,callback){
+    
+    var urlParsing = config.CloudantNosql.url;
+    urlParsing = urlParsing.concat("\""+responseentity+"\"");
+    //console.log(urlParsing);    
+    var rawdata = "";
+    var jsonrawdata = "";
+
+    http.get(urlParsing,function(resdata){
+        resdata.on("data",function(chunk){
+            rawdata += chunk;
+        })        
+        resdata.on("end",function(){                 
+                jsonrawdata = JSON.parse(rawdata);
+                callback(jsonrawdata);                 
+            })
+        })
+      
+}
+
 //Conversation service and Text to Speech.
-function conversationmessage(message_stt,db_data){
+function conversationmessage(message_stt){
 
       //Configuring the Context variable of Watson Conversation
         var turn = {
@@ -110,11 +135,16 @@ function conversationmessage(message_stt,db_data){
                 var response_parsing = response.output.text[0];
                 var response_entity = parsing_conv_respone(response);
                 console.log(response_entity);
-                var current_chemical_loc = chemical_location(db_data,response_entity); 
-                console.log(current_chemical_loc);
-                response_parsing = response_parsing.replace("#location#", current_chemical_loc);
-                console.log(response_parsing);
-                tj.speak(response_parsing);
+
+                cloudantGetRequest(response_entity,function(rawdata){
+                    var current_chemical_loc = chemical_location(rawdata,response_entity); 
+                    console.log(current_chemical_loc);
+                    response_parsing = response_parsing.replace("#location#", current_chemical_loc);
+                    console.log(response_parsing);
+                    tj.speak(response_parsing);
+                })
+
+                
             }
         })  
 
