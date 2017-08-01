@@ -1,6 +1,7 @@
 var config = require("./config.json");
 var TJBot = require('tjbot');
 var http = require("http");
+var led = require("./LED/blinkLed.js");
 
 //Watson API credentials
 var credentials = {
@@ -39,7 +40,7 @@ var tj = new TJBot(hardware,configuration,credentials);
 tj.listen(function(msg){
 
     if(msg.startsWith("Watson")){
-        
+        led.RGBLedBlink(100,1,100);
         var rawdata = "";
         var msg_stt = msg.toLowerCase().replace("Watson","");
         console.log(msg_stt);
