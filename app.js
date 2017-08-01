@@ -36,6 +36,7 @@ var configuration = {
 // Initializing the TJBot instance
 var tj = new TJBot(hardware,configuration,credentials);
 
+
 //Listening (Speak to Text Watson Service)
 tj.listen(function(msg){
 
@@ -147,6 +148,13 @@ function conversationmessage(message_stt){
 
                 
             }
-        })  
+        }) 
+        
+        process.on("SIGINT",()=>{
+            process.nextTick(function() {
+                process.exit(0);
+            });   
+            led.GPIOCleanUp(0);
+        })
 
 }
