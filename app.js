@@ -41,7 +41,10 @@ var tj = new TJBot(hardware,configuration,credentials);
 tj.listen(function(msg){
 
     if(msg.startsWith("Watson")){
-        led.RGBLedBlink(100,1,100);
+        //RGB LED Blink
+        led.GPIOCleanUp(0);
+        led.RGBLedBlink(100,100,1);
+
         var rawdata = "";
         var msg_stt = msg.toLowerCase().replace("Watson","");
         console.log(msg_stt);
@@ -142,6 +145,7 @@ function conversationmessage(message_stt){
                     var current_chemical_loc = chemical_location(rawdata,response_entity); 
                     console.log(current_chemical_loc);
                     response_parsing = response_parsing.replace("#location#", current_chemical_loc);
+                    locationLedGlow(current_chemical_loc);
                     console.log(response_parsing);
                     tj.speak(response_parsing);
                 })
@@ -149,6 +153,15 @@ function conversationmessage(message_stt){
                 
             }
         }) 
+
+var locationLedGlow = (location)=>{
+    led.GPIOCleanUp(0);
+    if(location === "Out of Self"){
+        led.RGBLedBlink(1,100,100);
+    } else {
+        led.RGBLedBlink(100,1,100);
+    }
+}
         
         process.on("SIGINT",()=>{
             process.nextTick(function() {
