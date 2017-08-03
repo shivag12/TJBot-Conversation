@@ -158,16 +158,18 @@ var locationLedGlow = (location)=>{
     led.GPIOCleanUp(0);
     if(location === "Out of Self"){
         led.RGBLedBlink(1,100,100);
-    } else {
+    } else if(location === "B3142-Lab1") {
         led.RGBLedBlink(100,1,100);
+    } else {
+        led.RGBLedBlink(100,100,1);
     }
 }
         
-        process.on("SIGINT",()=>{
-            process.nextTick(function() {
-                process.exit(0);
-            });   
-            led.GPIOCleanUp(0);
-        })
+process.on("SIGINT",()=>{
+    process.nextTick(function() {
+        process.exit(0);
+        });   
+    led.GPIOCleanUp(0);
+    })
 
 }
