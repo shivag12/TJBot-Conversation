@@ -144,7 +144,12 @@ function conversationmessage(message_stt){
                 cloudantGetRequest(response_entity,function(rawdata){
                     var current_chemical_loc = chemical_location(rawdata,response_entity); 
                     console.log(current_chemical_loc);
-                    response_parsing = response_parsing.replace("#location#", current_chemical_loc);
+                    if(current_chemical_loc === "Out of Shelf"){
+                        response_parsing = response_parsing.replace("#location#", current_chemical_loc);
+                        response_parsing = response_parsing.replace("located in","");
+                    } else {
+                        response_parsing = response_parsing.replace("#location#", current_chemical_loc);
+                    }                    
                     locationLedGlow(current_chemical_loc);
                     console.log(response_parsing);
                     tj.speak(response_parsing);
@@ -157,11 +162,14 @@ function conversationmessage(message_stt){
 var locationLedGlow = (location)=>{
     led.GPIOCleanUp(0);
     if(location === "Out of Self"){
-        led.RGBLedBlink(1,100,100);
+        led.RGBLedBlink(0,100,100);
+        setTimeout(()=>{
+            led.GPIOCleanUp(0);
+        },3000);
     } else if(location === "B3142-Lab1") {
-        led.RGBLedBlink(100,1,100);
+        led.RGBLedBlink(100,0,100);
     } else {
-        led.RGBLedBlink(100,100,1);
+        led.RGBLedBlink(100,100,0);
     }
 }
         

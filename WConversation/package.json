@@ -1,0 +1,15 @@
+{
+  "name": "watsonconversation",
+  "version": "1.0.0",
+  "description": "Watson Conversation using command line",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "watson-developer-cloud": "^2.37.0",
+    "yargs": "^8.0.2"
+  }
+}
