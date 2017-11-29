@@ -3,10 +3,10 @@ var pythonShell = require('python-shell');
 var RGBLedBlink = (R,G,B)=>{
     
     var options = {
-        scriptPath : "./python",
+        scriptPath : `${__dirname}/python`,
         args : [R,G,B]
     }
-    pythonShell.run('close.py',options,function(err,results){
+    pythonShell.run('RGB.py',options,function(err,results){
 
     });
 
@@ -15,10 +15,10 @@ var RGBLedBlink = (R,G,B)=>{
 var GPIOCleanUp = (C)=> {
 
     var options = {
-        scriptPath : './python',
+        scriptPath : `${__dirname}/python`,
         args : [1,1,1,C]
     }
-    pythonShell.run('close.py',options,function(err,results){
+    pythonShell.run('RGB.py',options,function(err,results){
 
     });
 }

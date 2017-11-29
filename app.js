@@ -1,7 +1,7 @@
 var config = require("./config.json");
 var TJBot = require('tjbot');
 var http = require("http");
-var led = require("./LED/blinkLed.js");
+//var led = require("./LED/blinkLed.js");
 
 //Watson API credentials
 var credentials = {
@@ -35,12 +35,19 @@ var configuration = {
 
 // Initializing the TJBot instance
 var tj = new TJBot(hardware,configuration,credentials);
+console.log("TJBot Intialization");
+
+//led.GPIOCleanUp(0);
+
 
 //Listening (Speak to Text Watson Service)
 tj.listen(function(msg){
 
     if(msg.startsWith("Watson")){
-        led.RGBLedBlink(100,1,100);
+        //RGB LED Blink        
+        //led.RGBLedBlink(100,100,0);
+	//tj.wave();
+
         var rawdata = "";
         var msg_stt = msg.toLowerCase().replace("Watson","");
         console.log(msg_stt);
@@ -141,12 +148,35 @@ function conversationmessage(message_stt){
                     var current_chemical_loc = chemical_location(rawdata,response_entity); 
                     console.log(current_chemical_loc);
                     response_parsing = response_parsing.replace("#location#", current_chemical_loc);
-                    console.log(response_parsing);
-                    tj.speak(response_parsing);
+                    locationLedGlow(current_chemical_loc,function(){
+			console.log(response_parsing);
+                    	//tj.speak(response_parsing);
+			tj.play("/home/pi/TJBot-Conversation/tell_about.wav");
+		    });
+                    
                 })
 
                 
             }
-        })  
+        }) 
 
+var locationLedGlow = (location, callback)=>{  
+      
+    if(location === "Out of Shelf"){
+        //led.RGBLedBlink(0,100,100);
+        //tj.lowerArm();
+	
+    } else if(location === 'B362-Lab-1'){	
+	//led.RGBLedBlink(100,0,100);
+	//tj.armBack();
+} else {
+        //led.RGBLedBlink(100,100,0);
+	//tj.raiseArm();	
+    }
+callback();
+}
+process.on('SIGINT',function(){
+	//led.GPIOCleanUp(0);
+	process.exit(2);	
+});
 }

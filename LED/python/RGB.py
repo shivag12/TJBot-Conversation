@@ -38,5 +38,8 @@ GREEN.start(int(sys.argv[2]))
 BLUE.start(int(sys.argv[3]))
 
 if(int(sys.argv[4]) == 0):
+    RED.stop()
+    GREEN.stop()
+    BLUE.stop()
     GPIO.cleanup()
 
